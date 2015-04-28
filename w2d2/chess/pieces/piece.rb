@@ -58,8 +58,8 @@ class SlidingPiece < Piece
         end
       end
     end
-    available_moves
 
+    available_moves
   end
 
   def add_vector(pos, dir)
@@ -69,11 +69,18 @@ class SlidingPiece < Piece
   def multiply_vector(dir, slide_amount)
     dir.map{|x, y| [x * slide_amount, y * slide_amount] }
   end
-
-
-
 end
 
 class SteppingPiece < Piece
 
+  def moves
+    available_moves = []
+
+    MOVE_DIRS.each do |dir|
+      test_pos = add_vector(self.pos, dir)
+      if valid_move?( test_pos )
+        available_moves << test_pos
+      end
+    end
+  end
 end
