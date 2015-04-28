@@ -1,4 +1,4 @@
-require_relative 'piece.rb'
+require_relative 'pieces/piece.rb'
 require 'colorize'
 require 'byebug'
 
