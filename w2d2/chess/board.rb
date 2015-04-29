@@ -1,6 +1,7 @@
 require_relative 'pieces/pieces.rb'
 require 'colorize'
 require 'byebug'
+require 'pry'
 
 class Board
   LETTER_MAPPING = {
@@ -64,6 +65,13 @@ class Board
     end
 
     dup_board
+  end
+
+  def in_check?(color)
+    other_color = (color == :white) ? :black : :white
+    king = pieces(color).find{|piece| piece.is_a?(King)}
+
+    pieces(other_color).any?{|piece| piece.moves.include?(king.pos) }
   end
 
   def inspect
@@ -191,10 +199,12 @@ end
 if __FILE__ == $PROGRAM_NAME
   board = Board.new
   duped_board = board.dup
-  duped_board.move([6,4], [4,4])
+  duped_board.move([6,3], [4,3])
   p "original board"
   p board
   p "duped board"
+  duped_board.move([1,4], [2,4])
   p duped_board
-
+  duped_board.move([0,5], [4,1])
+  duped_board.in_check?(:white)
 end
