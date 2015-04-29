@@ -9,3 +9,9 @@ end
 
 class IntoCheckError < ChessError
 end
+
+class NotChessNotation < ChessError
+end
+
+class NotYourTurn < ChessError
+end
