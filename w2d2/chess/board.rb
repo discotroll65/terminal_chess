@@ -92,9 +92,10 @@ class Board
   end
 
   def move(start_pos, end_pos)
-    raise "no piece there" if self[start_pos].nil?
+    raise NoPieceError.new("No piece there.") if self[start_pos].nil?
     piece = self[start_pos]
-    raise "not legal move" if !piece.moves.include?(end_pos)
+    raise IllegalMoveError.new("Not a legal move.") if !piece.moves.include?(end_pos)
+    raise IntoCheckError.new("Can't move into check.") if !piece.valid_moves.include?(end_pos)
 
     move!(start_pos, end_pos)
   end
@@ -105,7 +106,7 @@ class Board
     self[end_pos] = piece
     piece.pos = end_pos
     piece.moved = true
-    self.inspect
+    # self.inspect
   end
 
 
@@ -206,5 +207,6 @@ if __FILE__ == $PROGRAM_NAME
   duped_board.move([1,4], [2,4])
   p duped_board
   duped_board.move([0,5], [4,1])
+binding.pry
   duped_board.in_check?(:white)
 end

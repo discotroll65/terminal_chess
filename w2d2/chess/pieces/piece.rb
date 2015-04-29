@@ -13,6 +13,10 @@ class Piece
 
   end
 
+  def add_vector(pos, dir)
+    pos.zip(dir).map{ |x,y| x + y }
+  end
+
   def dup(dup_board)
     self.class.new(pos: @pos.dup, color: @color, board: dup_board)
   end
@@ -26,6 +30,13 @@ class Piece
     }
   end
 
+
+  def move_into_check?(test_pos)
+    duped_board = @board.dup
+    duped_board.move!(self.pos, test_pos)
+    duped_board.in_check?(self.color)
+  end
+
   def moves
      raise "Method not yet defined in pieces.rb"
   end
@@ -34,19 +45,21 @@ class Piece
     @moved
   end
 
-  def valid_move?(pos)
-     on_board?(pos) &&
-      (@board[pos].nil? || @board[pos].color != @color)
-  end
-
   def on_board?(pos)
     x, y = pos
     x.between?(0,7) && y.between?(0,7)
   end
 
-  def add_vector(pos, dir)
-    pos.zip(dir).map{ |x,y| x + y }
+  def valid_move?(test_pos)
+     on_board?(test_pos) &&
+      (@board[test_pos].nil? || @board[test_pos].color != @color)
   end
+
+  def valid_moves
+    self.moves.reject{|move| move_into_check?(move)}
+  end
+
+
 end
 
 class SlidingPiece < Piece
@@ -91,6 +104,7 @@ class SteppingPiece < Piece
 
     available_moves
   end
+
 end
 
 if __FILE__ == $PROGRAM_NAME
