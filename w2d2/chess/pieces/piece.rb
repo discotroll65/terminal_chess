@@ -1,4 +1,4 @@
-
+require_relative '../board.rb'
 
 
 class Piece
@@ -10,6 +10,11 @@ class Piece
     @color = options[:color]
     @board = options[:board]
     @moved = false
+
+  end
+
+  def dup(dup_board)
+    self.class.new(pos: @pos.dup, color: @color, board: dup_board)
   end
 
   def inspect
@@ -86,4 +91,15 @@ class SteppingPiece < Piece
 
     available_moves
   end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  board = Board.new(false)
+  knight1 = Knight.new(pos: [5,5], color: :black, board: board)
+  knight2 = knight1.dup(board)
+  knight2.pos = [1,1]
+  p "knight 1 here"
+  p knight1
+  p "knight 2 here"
+  p knight2
 end
