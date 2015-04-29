@@ -27,20 +27,12 @@ class Pawn < Piece
   end
 
   def attack_moves
-    if (@color == :white)
-      useable_dirs = WHITE_ATTACKS.select do |dir|
-        test_pos = add_vector(self.pos , dir)
-        can_attack?(test_pos)
-      end
-
-      useable_dirs.map{|dir| add_vector(self.pos, dir) }
-    else
-      usable_dirs = BLACK_ATTACKS.select do |dir|
-        test_pos = add_vector(self.pos , dir)
-        can_attack?(test_pos)
-      end
-      useable_dirs.map{|dirs| add_vector(self.pos, dir) }
+    attacks = self.color == :white ? WHITE_ATTACKS : BLACK_ATTACKS
+    useable_dirs = attacks.select do |dir|
+      test_pos = add_vector(self.pos , dir)
+      can_attack?(test_pos)
     end
+    useable_dirs.map{|dir| add_vector(self.pos, dir) }
   end
 
   def can_attack?(pos)
