@@ -128,6 +128,7 @@ class Board
   end
 
   def show_board
+    system("clear")
     board_display_array = Array.new(8) {''}
 
     8.times do |row|
