@@ -1,8 +1,11 @@
-class NoPieceError < StandardError
+class ChessError < StandardError
 end
 
-class IllegalMoveError < StandardError
+class NoPieceError < ChessError
 end
 
-class IntoCheckError < StandardError
+class IllegalMoveError < ChessError
+end
+
+class IntoCheckError < ChessError
 end
