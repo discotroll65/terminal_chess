@@ -1,13 +1,9 @@
-require_relative 'bishop.rb'
-require_relative 'knight.rb'
-require_relative 'rook.rb'
-require_relative 'king.rb'
-require_relative 'pawn.rb'
-require_relative 'queen.rb'
+
 
 
 class Piece
-  attr_reader :color, :pos, :moved, :display
+  attr_accessor :pos, :moved, :board
+  attr_reader :color, :display
 
   def initialize(options)
     @pos = options[:pos]
@@ -29,6 +25,10 @@ class Piece
      raise "Method not yet defined in pieces.rb"
   end
 
+  def moved?
+    @moved
+  end
+
   def valid_move?(pos)
      on_board?(pos) &&
       (@board[pos].nil? || @board[pos].color != @color)
@@ -38,6 +38,10 @@ class Piece
     x, y = pos
     x.between?(0,7) && y.between?(0,7)
   end
+
+  def add_vector(pos, dir)
+    pos.zip(dir).map{ |x,y| x + y }
+  end
 end
 
 class SlidingPiece < Piece
@@ -45,7 +49,7 @@ class SlidingPiece < Piece
   def moves
     available_moves = []
 
-    MOVE_DIRS.each do |dir|
+    self.class::MOVE_DIRS.each do |dir|
       (1..7).each do |slide_amount|
         move_vector = multiply_vector(dir, slide_amount)
         test_pos = add_vector(self.pos , move_vector )
@@ -62,12 +66,9 @@ class SlidingPiece < Piece
     available_moves
   end
 
-  def add_vector(pos, dir)
-    pos.zip(dir).map{ |x,y| x + y }
-  end
 
   def multiply_vector(dir, slide_amount)
-    dir.map{|x, y| [x * slide_amount, y * slide_amount] }
+    [dir[0] * slide_amount, dir[1] * slide_amount]
   end
 end
 
@@ -76,11 +77,13 @@ class SteppingPiece < Piece
   def moves
     available_moves = []
 
-    MOVE_DIRS.each do |dir|
+    self.class::MOVE_DIRS.each do |dir|
       test_pos = add_vector(self.pos, dir)
       if valid_move?( test_pos )
         available_moves << test_pos
       end
     end
+
+    available_moves
   end
 end

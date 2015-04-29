@@ -1,7 +1,7 @@
 require_relative 'piece.rb'
 
 class Knight < SteppingPiece
-  DELTAS = [
+  MOVE_DIRS = [
   [-2, -1],
   [-2,  1],
   [-1, -2],

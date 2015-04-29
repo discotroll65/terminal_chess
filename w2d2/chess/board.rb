@@ -1,4 +1,4 @@
-require_relative 'pieces/piece.rb'
+require_relative 'pieces/pieces.rb'
 require 'colorize'
 require 'byebug'
 
@@ -31,31 +31,59 @@ class Board
     set_board
   end
 
-  def [](x, y)
+  def [](pos)
+    x, y = pos
     @grid[x][y]
   end
 
+  def []=(pos, piece)
+    x, y = pos
+    @grid[x][y] = piece
+  end
 
-
-  def dark_square_eval( (x, y) )
-    if self[x,y].nil?
+  def dark_square_eval(pos)
+    x, y = pos
+    if self[pos].nil?
       "   ".colorize(background: :blue)
     else
-      piece = self[x,y]
+      piece = self[pos]
       " #{piece.display.colorize(color: piece.color)} "
         .colorize(background: :blue)
     end
   end
 
-  def light_square_eval((x, y))
-    if self[x,y].nil?
+  def inspect
+    self.show_board
+    nil
+  end
+
+  def light_square_eval(pos)
+    x, y = pos
+    if self[pos].nil?
       "   ".colorize(background: :red)
     else
-      piece = self[x,y]
+      piece = self[pos]
 
       " #{piece.display.colorize(color: piece.color)} "
         .colorize(background: :red)
     end
+  end
+
+  def move(start_pos, end_pos)
+    raise "no piece there" if self[start_pos].nil?
+    piece = self[start_pos]
+    raise "not legal move" if !piece.moves.include?(end_pos)
+
+    move!(start_pos, end_pos)
+  end
+
+  def move!(start_pos, end_pos)
+    piece = self[start_pos]
+    self[start_pos] = nil
+    self[end_pos] = piece
+    piece.pos = end_pos
+    piece.moved = true
+    self.inspect
   end
 
 
@@ -85,7 +113,7 @@ class Board
 
 
 private
-
+  # [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
   def set_board
     white_royals = [
       Rook.new(board: self, pos: [7, 0], color: :white),
