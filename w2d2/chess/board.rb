@@ -136,7 +136,9 @@ class Board
       end
     end
 
-    board_display_array.each{|row| puts row}
+    numbers = (1..8).to_a.reverse
+    board_display_array.each{|row| puts "#{numbers.shift} #{row}"}
+    puts "   a  b  c  d  e  f  g  h "
   end
 
 
