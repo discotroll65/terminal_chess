@@ -26,9 +26,9 @@ class Board
   }
 
 
-  def initialize
+  def initialize(setup = true)
     @grid = Array.new(8) { Array.new(8) {nil} }
-    set_board
+    set_board if setup
   end
 
   def [](pos)
@@ -50,6 +50,20 @@ class Board
       " #{piece.display.colorize(color: piece.color)} "
         .colorize(background: :blue)
     end
+  end
+
+
+  def dup
+    dup_board = Board.new(false)
+    all_pieces = pieces(:black) + pieces(:white)
+
+    all_pieces.each do |piece|
+      duped_piece = piece.dup(dup_board)
+      pos = duped_piece.pos
+      dup_board[pos] = duped_piece
+    end
+
+    dup_board
   end
 
   def inspect
@@ -93,6 +107,11 @@ class Board
     x, y = input_array[0].upcase.to_sym , input_array[1].to_i
     pos_x, pos_y = LETTER_MAPPING[x], NUMBER_MAPPING[y]
     [pos_x, pos_y]
+  end
+
+  def pieces(color)
+    pieces = @grid.flatten.compact
+    pieces.select{|piece| piece.color == color}
   end
 
   def show_board
@@ -169,5 +188,13 @@ private
 end
 
 
-board = Board.new
-board.show_board
+if __FILE__ == $PROGRAM_NAME
+  board = Board.new
+  duped_board = board.dup
+  duped_board.move([6,4], [4,4])
+  p "original board"
+  p board
+  p "duped board"
+  p duped_board
+
+end
