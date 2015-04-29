@@ -36,7 +36,7 @@ class Pawn < Piece
   end
 
   def can_attack?(pos)
-    !@board[pos].nil? && @board[pos].color != @color
+    !@board[pos].nil? && @board[pos].color != @color && on_board?(pos)
   end
 
   def moves
