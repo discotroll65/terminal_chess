@@ -74,6 +74,10 @@ class Board
     pieces(other_color).any?{|piece| piece.moves.include?(king.pos) }
   end
 
+  def in_check_mate?(color)
+    pieces(color).all?{|piece| piece.valid_moves.empty? }
+  end
+
   def inspect
     self.show_board
     nil
