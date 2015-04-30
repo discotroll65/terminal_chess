@@ -59,16 +59,12 @@ class Chess
     input = script.nil? ? @current_player.get_move : script
 
     start_pos, end_pos = parse(input)
+    raise NoPieceError.new("No piece there.") if board[start_pos].nil? 
+    raise NotYourTurn.new("Not your turn, dude.") if
+      board[start_pos].color != @current_player.color
 
-    if board[start_pos].color != @current_player.color
-      raise NotYourTurn.new("Not your turn, dude.")
-    end
 
     board.move(start_pos, end_pos)
-  end
-
-  def chess_notation_play
-
   end
 
   def show_winner

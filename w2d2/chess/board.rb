@@ -4,6 +4,8 @@ require 'byebug'
 require 'pry'
 
 class Board
+  attr_reader :grid
+
   LETTER_MAPPING = {
     A: 0,
     B: 1,
