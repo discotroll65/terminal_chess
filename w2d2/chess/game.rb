@@ -39,20 +39,27 @@ class Chess
     board.inspect
 
     until @board.in_check_mate?(@current_player.color)
-      puts "warning: #{@current_player.color.to_s}
-        is in check!".upcase.red if board.in_check?(@current_player.color)
+      see_if_in_check
       begin
         make_chess_move
       rescue ChessError => e
         puts e.message
         retry
       end
-
-      @turn *= -1
-      @current_player = @players[@turn]
+      chang_turn
       board.inspect
     end
     show_winner
+  end
+
+  def change_turn
+    @turn *= -1
+    @current_player = @players[@turn]
+  end
+
+  def see_if_in_check
+    puts "warning: #{@current_player.color.to_s}
+        is in check!".upcase.red if board.in_check?(@current_player.color)
   end
 
   def make_chess_move(script = nil)
