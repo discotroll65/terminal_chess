@@ -46,7 +46,7 @@ class Chess
         puts e.message
         retry
       end
-      chang_turn
+      change_turn
       board.inspect
     end
     show_winner
@@ -69,7 +69,6 @@ class Chess
     raise NoPieceError.new("No piece there.") if board[start_pos].nil? 
     raise NotYourTurn.new("Not your turn, dude.") if
       board[start_pos].color != @current_player.color
-
 
     board.move(start_pos, end_pos)
   end
@@ -107,6 +106,9 @@ if __FILE__ == $PROGRAM_NAME
     black: HumanPlayer.new(color: :black)
     }
   game = Chess.new(options)
+  # game.board.move!([7,1],[5,1])
+  # game.board.move!([7,2],[5,2])
+  # game.board.move!([7,3],[5,3])
 
   game.play
 

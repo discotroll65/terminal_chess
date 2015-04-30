@@ -103,7 +103,28 @@ class Board
     raise IllegalMoveError.new("Not a legal move.") if !piece.moves.include?(end_pos)
     raise IntoCheckError.new("Can't move into check.") if !piece.valid_moves.include?(end_pos)
 
-    move!(start_pos, end_pos)
+    if self[start_pos].is_a?(King) && self[start_pos].castling_moves.include?(end_pos)
+      castle(start_pos, end_pos)
+    else
+      move!(start_pos, end_pos)
+    end
+    
+  end
+
+  def castle(start_pos, end_pos)
+    king = self[start_pos]
+    row = start_pos[0]
+    start_col, end_col = start_pos[1], end_pos[1]
+    if end_col > start_col   #kingside castle
+      rook = king.get_rook([row, start_col + 1])
+      move!(king.pos, end_pos)
+      move!(rook.pos, [row, start_col + 1]) 
+    else                    #queenside castle
+      rook = king.get_rook([row, start_col - 1])
+      move!(king.pos, end_pos)
+      move!(rook.pos, [row, start_col - 1]) 
+    end
+
   end
 
   def move!(start_pos, end_pos)

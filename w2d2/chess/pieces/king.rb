@@ -17,11 +17,24 @@ class King < SteppingPiece
   end
 
   def moves
-    regular_moves = super
-    regular_moves + castling_moves(regular_moves)
+    regular_moves = reg_moves
+    regular_moves + castling_moves
   end
 
-  def castling_moves(regular_moves)
+  def reg_moves
+    available_moves = []
+
+    self.class::MOVE_DIRS.each do |dir|
+      test_pos = add_vector(self.pos, dir)
+      if valid_move?( test_pos )
+        available_moves << test_pos
+      end
+    end
+
+    available_moves
+  end
+
+  def castling_moves(regular_moves = self.reg_moves)
     return [] if @moved
     one_hops = king_moves_on_same_row(regular_moves)
     return [] if one_hops.empty?
