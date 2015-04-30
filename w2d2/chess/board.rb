@@ -132,7 +132,7 @@ class Board
     self[start_pos] = nil
     self[end_pos] = piece
     piece.pos = end_pos
-    piece.moved = true
+    piece.moved ||= true
     # self.inspect
   end
 
