@@ -36,7 +36,7 @@ class Chess
 
   def play
 
-    board.inspect
+    board.show_board
 
     until @board.in_check_mate?(@current_player.color)
       see_if_in_check
@@ -47,7 +47,8 @@ class Chess
         retry
       end
       change_turn
-      board.inspect
+      turn_color = @current_player.color
+      turn_color == :white ? board.show_board : board.show_rotated_board
     end
     show_winner
   end
@@ -66,7 +67,7 @@ class Chess
     input = script.nil? ? @current_player.get_move : script
 
     start_pos, end_pos = parse(input)
-    raise NoPieceError.new("No piece there.") if board[start_pos].nil? 
+    raise NoPieceError.new("No piece there.") if board[start_pos].nil?
     raise NotYourTurn.new("Not your turn, dude.") if
       board[start_pos].color != @current_player.color
 

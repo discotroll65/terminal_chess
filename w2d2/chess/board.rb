@@ -44,12 +44,12 @@ class Board
     @grid[x][y] = piece
   end
 
-  def dark_square_eval(pos)
+  def dark_square_eval(pos, grid)
     x, y = pos
-    if self[pos].nil?
+    if grid[x][y].nil?
       "   ".colorize(background: :blue)
     else
-      piece = self[pos]
+      piece = grid[x][y]
       " #{piece.display.colorize(color: piece.color)} "
         .colorize(background: :blue)
     end
@@ -85,12 +85,12 @@ class Board
     nil
   end
 
-  def light_square_eval(pos)
+  def light_square_eval(pos, grid)
     x, y = pos
-    if self[pos].nil?
+    if grid[x][y].nil?
       "   ".colorize(background: :red)
     else
-      piece = self[pos]
+      piece = grid[x][y]
 
       " #{piece.display.colorize(color: piece.color)} "
         .colorize(background: :red)
@@ -108,7 +108,7 @@ class Board
     else
       move!(start_pos, end_pos)
     end
-    
+
   end
 
   def castle(start_pos, end_pos)
@@ -118,11 +118,11 @@ class Board
     if end_col > start_col   #kingside castle
       rook = king.get_rook([row, start_col + 1])
       move!(king.pos, end_pos)
-      move!(rook.pos, [row, start_col + 1]) 
+      move!(rook.pos, [row, start_col + 1])
     else                    #queenside castle
       rook = king.get_rook([row, start_col - 1])
       move!(king.pos, end_pos)
-      move!(rook.pos, [row, start_col - 1]) 
+      move!(rook.pos, [row, start_col - 1])
     end
 
   end
@@ -150,23 +150,32 @@ class Board
     pieces.select{|piece| piece.color == color}
   end
 
-  def show_board
+  def show_board( grid = @grid, number_coords = (1..8).to_a,
+      letter_coords = "   a  b  c  d  e  f  g  h " )
     system("clear")
     board_display_array = Array.new(8) {''}
 
     8.times do |row|
-      @grid[row].each_index do |col|
+      grid[row].each_index do |col|
         if (row + col) % 2 == 0
-          board_display_array[row] += light_square_eval( [row, col] )
+          board_display_array[row] += light_square_eval( [row, col], grid )
         else
-          board_display_array[row] += dark_square_eval( [row, col] )
+          board_display_array[row] += dark_square_eval( [row, col], grid )
         end
       end
     end
-
-    numbers = (1..8).to_a.reverse
+    numbers = number_coords.reverse
     board_display_array.each{|row| puts "#{numbers.shift} #{row}"}
-    puts "   a  b  c  d  e  f  g  h "
+    puts letter_coords
+  end
+
+  def show_rotated_board
+    rotated_grid = @grid.reverse.map do |row|
+      row.reverse
+    end
+    number_coords = (1..8).to_a.reverse
+    letter_coords = "   h  g  f  e  d  c  b  a "
+    self.show_board( rotated_grid, number_coords, letter_coords)
   end
 
 
@@ -237,6 +246,5 @@ if __FILE__ == $PROGRAM_NAME
   duped_board.move([1,4], [2,4])
   p duped_board
   duped_board.move([0,5], [4,1])
-binding.pry
   duped_board.in_check?(:white)
 end
