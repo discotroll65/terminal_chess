@@ -98,17 +98,35 @@ class Board
   end
 
   def move(start_pos, end_pos)
-    raise NoPieceError.new("No piece there.") if self[start_pos].nil?
     piece = self[start_pos]
+    raise NoPieceError.new("No piece there.") if piece.nil?
     raise IllegalMoveError.new("Not a legal move.") if !piece.moves.include?(end_pos)
     raise IntoCheckError.new("Can't move into check.") if !piece.valid_moves.include?(end_pos)
 
-    if self[start_pos].is_a?(King) && self[start_pos].castling_moves.include?(end_pos)
+    handle_en_passant(piece,end_pos) if piece.is_a?(Pawn)
+    if piece.is_a?(King) && piece.castling_moves.include?(end_pos)
       castle(start_pos, end_pos)
     else
       move!(start_pos, end_pos)
     end
+  end
 
+  def handle_en_passant(pawn, end_pos)
+    if pawn.making_two_hop?(end_pos)
+      pawn.en_passant_danger = true
+    else
+      pawn.en_passant_danger = false
+    end
+    
+    if pawn.making_en_passant?(end_pos)
+      if (pawn.color == :white)
+        dead_pawn_pos = pawn.add_vector(end_pos, Pawn::BLACK_SLIDES.last)
+        self[dead_pawn_pos] = nil
+      else
+        dead_pawn_pos = pawn.add_vector(end_pos, Pawn::WHITE_SLIDES.last)
+        self[dead_pawn_pos] = nil
+      end
+    end
   end
 
   def castle(start_pos, end_pos)
