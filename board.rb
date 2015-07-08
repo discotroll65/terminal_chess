@@ -1,7 +1,5 @@
 require_relative 'pieces/pieces.rb'
 require 'colorize'
-require 'byebug'
-require 'pry'
 
 class Board
   attr_reader :grid
@@ -117,7 +115,7 @@ class Board
     else
       pawn.en_passant_danger = false
     end
-    
+
     if pawn.making_en_passant?(end_pos)
       if (pawn.color == :white)
         dead_pawn_pos = pawn.add_vector(end_pos, Pawn::BLACK_SLIDES.last)
